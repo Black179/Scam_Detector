@@ -1,0 +1,44 @@
+{
+  "name": "scam_identifier",
+  "version": "1.0.0",
+  "description": "AI-powered scam detection platform for students",
+  "type": "module",
+  "main": "postcss.config.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "keywords": [
+    "scam",
+    "detection",
+    "ai",
+    "students",
+    "internship"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "framer-motion": "^12.23.26",
+    "jspdf": "^3.0.4",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.11.0",
+    "recharts": "^3.6.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
+    "vite": "^6.2.0"
+  }
+}

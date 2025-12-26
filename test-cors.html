@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test for ScamGuard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success {
+            color: #10b981;
+            background: #d1fae5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #ef4444;
+            background: #fee2e2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 5px;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ ScamGuard CORS Test</h1>
+        <p>This page tests whether your ngrok tunnel is properly configured for CORS.</p>
+        
+        <div>
+            <button onclick="testLocalFetch()">Test Local API (3001)</button>
+            <button onclick="testNgrokFetch()">Test Ngrok URL</button>
+            <button onclick="checkCurrentOrigin()">Check Current Origin</button>
+        </div>
+
+        <div id="results">
+            <h3>Test Results:</h3>
+            <div id="output">Click a button to run tests...</div>
+        </div>
+
+        <div class="success">
+            <h3>📋 Instructions:</h3>
+            <ol>
+                <li>Start your dev server: <code>npm run dev</code></li>
+                <li>Start ngrok: <code>ngrok http 3001</code></li>
+                <li>Copy your ngrok URL (e.g., https://abc123.ngrok-free.app)</li>
+                <li>Access this page via your ngrok URL</li>
+                <li>Test both local and ngrok access</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <h3>⚠️ Common CORS Issues:</h3>
+            <ul>
+                <li>Missing ngrok-skip-browser-warning header</li>
+                <li>Host not set to 0.0.0.0 in Vite config</li>
+                <li>CORS not properly configured</li>
+                <li>Firewall blocking external access</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = isError ? '#ef4444' : '#10b981';
+            output.innerHTML += `<div style="color: ${color}; margin: 5px 0;">[${timestamp}] ${message}</div>`;
+        }
+
+        function checkCurrentOrigin() {
+            log(`Current Origin: ${window.location.origin}`);
+            log(`Current Host: ${window.location.host}`);
+            log(`Protocol: ${window.location.protocol}`);
+        }
+
+        async function testLocalFetch() {
+            try {
+                log('Testing local fetch to http://localhost:3001...');
+                const response = await fetch('http://localhost:3001');
+                log(`✅ Local fetch successful! Status: ${response.status}`);
+            } catch (error) {
+                log(`❌ Local fetch failed: ${error.message}`, true);
+            }
+        }
+
+        async function testNgrokFetch() {
+            const ngrokUrl = prompt('Enter your ngrok URL (e.g., https://abc123.ngrok-free.app):');
+            if (!ngrokUrl) return;
+
+            try {
+                log(`Testing ngrok fetch to ${ngrokUrl}...`);
+                const response = await fetch(ngrokUrl, {
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
+                log(`✅ Ngrok fetch successful! Status: ${response.status}`);
+                
+                // Check response headers
+                const corsHeader = response.headers.get('Access-Control-Allow-Origin');
+                log(`CORS Header: ${corsHeader || 'Not found'}`);
+                
+            } catch (error) {
+                log(`❌ Ngrok fetch failed: ${error.message}`, true);
+                
+                if (error.message.includes('CORS')) {
+                    log('💡 This is a CORS issue. Check your Vite configuration.', true);
+                }
+                if (error.message.includes('Failed to fetch')) {
+                    log('💡 This might be a network or ngrok configuration issue.', true);
+                }
+            }
+        }
+
+        // Auto-check current page info
+        checkCurrentOrigin();
+    </script>
+</body>
+</html>
